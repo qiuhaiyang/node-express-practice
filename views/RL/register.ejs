@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>医院信息人员注册</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/css/font.css">
+	<link rel="stylesheet" href="/static/css/weadmin.css">
+    <script src="/lib/layui/layui.js" charset="utf-8"></script>
+
+</head>
+<body class="login-bg">
+    
+    <div class="login">
+        <div class="message">医院管理系统注册</div>
+        <div id="darkbannerwrap"></div>
+        
+        <form method="post" class="layui-form" >
+            <input name="username" placeholder="用户名"  type="text" required class="layui-input" >
+            <hr class="hr15">
+            <input name="password" required placeholder="密码"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input name="passwordComfirm" required placeholder="密码确认"  type="password" class="layui-input">
+            <hr class="hr15">
+            <input class="confirm" value="确认" style="width:100%;" type="button" id="confirm">
+            <hr class="hr20" >
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        window.onload = function(){
+
+            let inputs = document.querySelectorAll('input:not(#confirm)')
+
+            document.getElementById('confirm').onclick = function (){
+                inputs.forEach((item,i)=>{
+                    if(item.value == ''){
+                        alert(item.placeholder + '不能为空')
+                        item.style.borderColor = 'red'
+                        return false
+                    }
+                })
+                if(inputs[1].value !== inputs[2].value){
+                    alert('密码不相同，请重新输入')
+                    inputs[2].style.borderColor='red'
+                    return false
+                }
+                var xhr = new XMLHttpRequest()
+                xhr.open('post','/rl/rg')
+                var formdata = new FormData()
+                formdata.set('username',inputs[0].value)
+                formdata.set('password',inputs[1].value)
+                xhr.send(formdata)
+                xhr.onreadystatechange = function (){
+                    if(this.status == 200 && this.readyState==4){
+                        console.log(this.responseText)
+                        if(this.responseText =='ok'){
+                            location.href = '/rl/login'
+                        }else if(this.responseText =='has'){
+                            alert("该用户已经注册，请重新注册")
+                        }
+                    }
+                }
+            }
+        }
+    </script>  
+    <!-- 底部结束 -->
+</body>
+</html>
